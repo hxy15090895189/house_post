@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.house_post.mapper.HouseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.house_post.entity.House">
+        <id column="ID" property="id" />
+        <result column="USER_ID" property="userId" />
+        <result column="TYPE_ID" property="typeId" />
+        <result column="TITLE" property="title" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="PRICE" property="price" />
+        <result column="PUBDATE" property="pubdate" />
+        <result column="FLOORAGE" property="floorage" />
+        <result column="CONTACT" property="contact" />
+        <result column="STREET_ID" property="streetId" />
+        <result column="ispass" property="ispass" />
+        <result column="isdel" property="isdel" />
+        <result column="path" property="path" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, USER_ID, TYPE_ID, TITLE, DESCRIPTION, PRICE, PUBDATE, FLOORAGE, CONTACT, STREET_ID, ispass, isdel, path
+    </sql>
+
+    <select id="selectByid2" parameterType="int" resultType="com.example.house_post.entity.House">
+   SELECT house.*,type.`NAME` AS tname,street.`NAME` AS sname, district.`NAME` AS dname FROM house
+LEFT JOIN `type` ON house.`TYPE_ID`=type.`ID`
+LEFT JOIN street ON house.`STREET_ID`= street.`ID`
+LEFT JOIN `district` ON street.`DISTRICT_ID`=district.`ID`
+WHERE user_id=#{id}
+ </select>
+
+    <!--查询浏览的出租房信息-->
+    <select id="selectQueryAndPage" parameterType="com.example.house_post.entity.Search" resultType="com.example.house_post.entity.House">
+        SELECT
+        house.id,
+        user_id AS userId,
+        type_id AS typeId,
+        title,
+        description,
+        price,
+        pubdate,
+        floorage,
+        contact,
+        street_id AS streetId,
+        type.`NAME` AS tname,
+        street.`NAME` AS sname,
+        district.`NAME` AS dname
+        FROM house
+        LEFT JOIN `type` ON house.`TYPE_ID`=type.`ID`
+        LEFT JOIN street ON house.`STREET_ID`= street.`ID`
+        LEFT JOIN `district` ON street.`DISTRICT_ID`=district.`ID`
+        ${ew.customSqlSegment}
+    </select>
+</mapper>
